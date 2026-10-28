@@ -1,4 +1,11 @@
 import express from "express";
+import swaggerUi from "swagger-ui-express";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const swaggerDocument = JSON.parse(readFileSync(join(__dirname, "openapi.json"), "utf8"));
+
 const app = express();
 app.use(express.json());
 const port = 3000;
@@ -117,6 +124,8 @@ app.delete("/tasks/:id", (req, res) => {
 
     res.status(204).send();
 });
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
